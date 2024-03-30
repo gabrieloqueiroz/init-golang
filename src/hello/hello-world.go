@@ -4,7 +4,11 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 )
+
+const monitoring = 3
+const delay = 5
 
 func main() {
 	showIntroducion()
@@ -64,12 +68,26 @@ func readCommandMenu() int {
 func startMonitoring() {
 	fmt.Printf("Displaing...\n")
 
-	site := "https://www.youtube.com"
-	resp, _ := http.Get(site)
+	var sites []string
+	sites = append(sites, "https://www.youtube.com")
+	sites = append(sites, "https://www.google.com")
+	sites = append(sites, "https://www.olhardigital.com.br")
 
+	for i := 0; i < monitoring; i++ {
+		for _, sites := range sites {
+			fmt.Println("Testing site: ", sites)
+			testingSites(sites)
+		}
+		fmt.Println("=========================================================\n")
+		time.Sleep(delay * time.Second)
+	}
+}
+
+func testingSites(site string) {
+	resp, _ := http.Get(site)
 	if resp.StatusCode == 200 {
-		fmt.Println("The site:", site, "was load with success!")
+		fmt.Println("The site:", site, "was load with success!\n")
 	} else {
-		fmt.Println("Site:", site, "contains error. Status code: ", resp.StatusCode)
+		fmt.Println("Site:", site, "contains error. Status code: ", resp.StatusCode, "\n")
 	}
 }
